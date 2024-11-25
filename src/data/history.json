@@ -1,0 +1,13 @@
+{
+    "history": {
+        "historyId1": {
+            "userId": "userId1",
+            "carId": "carId1",
+            "slotId": "slotId1",
+            "locationId": "locationId1",
+            "entryTime": 1653052800000,
+            "exitTime": 1653060000000,
+            "duration": 7200
+        }
+    }
+}

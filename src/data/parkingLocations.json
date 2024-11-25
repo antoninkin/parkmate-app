@@ -1,0 +1,184 @@
+{
+    "parkingLocations": {
+        "1": {
+            "locationId": "locationId1",
+            "name": "ParkMate Central Park",
+            "address": "28 Broadway, Chippendale NSW 2008",
+            "latitude": -33.8847,
+            "longitude": 151.2029,
+            "totalSpots": 50,
+            "availableSpots": 10
+        },
+        "2": {
+            "locationId": "locationId2",
+            "name": "ParkMate Darling Harbour",
+            "address": "100 Murray St, Pyrmont NSW 2009",
+            "latitude": -33.8728,
+            "longitude": 151.1999,
+            "totalSpots": 100,
+            "availableSpots": 20
+        },
+        "3": {
+            "locationId": "locationId3",
+            "name": "ParkMate Circular Quay",
+            "address": "5 Alfred St, Sydney NSW 2000",
+            "latitude": -33.8613,
+            "longitude": 151.2111,
+            "totalSpots": 80,
+            "availableSpots": 15
+        },
+        "4": {
+            "locationId": "locationId4",
+            "name": "ParkMate The Rocks",
+            "address": "110 George St, The Rocks NSW 2000",
+            "latitude": -33.8594,
+            "longitude": 151.2094,
+            "totalSpots": 70,
+            "availableSpots": 12
+        },
+        "5": {
+            "locationId": "locationId5",
+            "name": "ParkMate Surry Hills",
+            "address": "207 Albion St, Surry Hills NSW 2010",
+            "latitude": -33.8838,
+            "longitude": 151.2113,
+            "totalSpots": 60,
+            "availableSpots": 8
+        },
+        "6": {
+            "locationId": "locationId6",
+            "name": "ParkMate Barangaroo",
+            "address": "22 Sussex St, Barangaroo NSW 2000",
+            "latitude": -33.8651,
+            "longitude": 151.2026,
+            "totalSpots": 90,
+            "availableSpots": 18
+        },
+        "7": {
+            "locationId": "locationId7",
+            "name": "ParkMate Pitt Street",
+            "address": "500 Pitt St, Sydney NSW 2000",
+            "latitude": -33.8784,
+            "longitude": 151.2072,
+            "totalSpots": 100,
+            "availableSpots": 25
+        },
+        "8": {
+            "locationId": "locationId8",
+            "name": "ParkMate Kings Cross",
+            "address": "82-94 Darlinghurst Rd, Potts Point NSW 2011",
+            "latitude": -33.8749,
+            "longitude": 151.2223,
+            "totalSpots": 50,
+            "availableSpots": 10
+        },
+        "9": {
+            "locationId": "locationId9",
+            "name": "ParkMate Bondi Beach",
+            "address": "Queen Elizabeth Dr, Bondi Beach NSW 2026",
+            "latitude": -33.8915,
+            "longitude": 151.2767,
+            "totalSpots": 120,
+            "availableSpots": 30
+        },
+        "10": {
+            "locationId": "locationId10",
+            "name": "ParkMate North Sydney",
+            "address": "100 Miller St, North Sydney NSW 2060",
+            "latitude": -33.8399,
+            "longitude": 151.2079,
+            "totalSpots": 80,
+            "availableSpots": 20
+        },
+        "11": {
+            "locationId": "locationId11",
+            "name": "ParkMate Chatswood",
+            "address": "1 Anderson St, Chatswood NSW 2067",
+            "latitude": -33.7969,
+            "longitude": 151.1794,
+            "totalSpots": 60,
+            "availableSpots": 12
+        },
+        "12": {
+            "locationId": "locationId12",
+            "name": "ParkMate Parramatta",
+            "address": "159-175 Church St, Parramatta NSW 2150",
+            "latitude": -33.8153,
+            "longitude": 151.0038,
+            "totalSpots": 150,
+            "availableSpots": 40
+        },
+        "13": {
+            "locationId": "locationId13",
+            "name": "ParkMate Sydney Olympic Park",
+            "address": "8 Australia Ave, Sydney Olympic Park NSW 2127",
+            "latitude": -33.8482,
+            "longitude": 151.0669,
+            "totalSpots": 200,
+            "availableSpots": 50
+        },
+        "14": {
+            "locationId": "locationId14",
+            "name": "ParkMate Wynyard",
+            "address": "12 Carrington St, Sydney NSW 2000",
+            "latitude": -33.8676,
+            "longitude": 151.2069,
+            "totalSpots": 100,
+            "availableSpots": 22
+        },
+        "15": {
+            "locationId": "locationId15",
+            "name": "ParkMate Ultimo",
+            "address": "Ultimo Rd, Ultimo NSW 2007",
+            "latitude": -33.8813,
+            "longitude": 151.1989,
+            "totalSpots": 60,
+            "availableSpots": 15
+        },
+        "16": {
+            "locationId": "locationId16",
+            "name": "ParkMate Redfern",
+            "address": "Gibbons St, Redfern NSW 2016",
+            "latitude": -33.8921,
+            "longitude": 151.2048,
+            "totalSpots": 70,
+            "availableSpots": 17
+        },
+        "17": {
+            "locationId": "locationId17",
+            "name": "ParkMate Moore Park",
+            "address": "Ernest St, Moore Park NSW 2021",
+            "latitude": -33.8948,
+            "longitude": 151.2282,
+            "totalSpots": 120,
+            "availableSpots": 35
+        },
+        "18": {
+            "locationId": "locationId18",
+            "name": "ParkMate Haymarket",
+            "address": "Thomas St, Haymarket NSW 2000",
+            "latitude": -33.8814,
+            "longitude": 151.2037,
+            "totalSpots": 50,
+            "availableSpots": 10
+        },
+        "19": {
+            "locationId": "locationId19",
+            "name": "ParkMate Glebe",
+            "address": "Glebe Point Rd, Glebe NSW 2037",
+            "latitude": -33.8783,
+            "longitude": 151.1882,
+            "totalSpots": 60,
+            "availableSpots": 14
+        },
+        "20": {
+            "locationId": "locationId20",
+            "name": "ParkMate Macquarie Park",
+            "address": "114 Herring Rd, Macquarie Park NSW 2113",
+            "latitude": -33.7747,
+            "longitude": 151.1136,
+            "totalSpots": 90,
+            "availableSpots": 22
+        }
+    }
+}

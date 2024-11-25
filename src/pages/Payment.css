@@ -1,0 +1,37 @@
+.payment-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2 {
+    color: #333;
+}
+
+.reservation-details,
+.payment-methods {
+    margin-bottom: 20px;
+}
+
+.payment-methods div {
+    margin-bottom: 10px;
+}
+
+.pay-button {
+    background-color: #fcb900;
+    color: rgb(0, 0, 0);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.pay-button:hover {
+    background-color: #cd9600;
+}

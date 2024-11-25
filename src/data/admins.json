@@ -1,0 +1,14 @@
+{
+    "admins": {
+        "adminId1": {
+            "name": "Admin1",
+            "email": "admin1@gmail.com",
+            "phone": "1234567890"
+        },
+        "adminId2": {
+            "name": "Admin2",
+            "email": "admin2@gmail.com",
+            "phone": "123-456-7899"
+        }
+    }
+}

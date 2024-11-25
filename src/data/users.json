@@ -1,0 +1,21 @@
+{
+    "users": {
+        "userId1": {
+            "name": "John Doe",
+            "email": "john.doe@gmail.com",
+            "phone": "123-456-7890",
+            "registeredCars": [
+                "carId1",
+                "carId2"
+            ]
+        },
+        "userId2": {
+            "name": "Jane Smith",
+            "email": "jane.smith@gmail.com",
+            "phone": "098-765-4321",
+            "registeredCars": [
+                "carId3"
+            ]
+        }
+    }
+}

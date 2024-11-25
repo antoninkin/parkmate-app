@@ -1,6 +1,24 @@
-# Getting Started with Create React App
+# ParkMate Parking Management System
 
+This is a responsive web application for managing parking spaces. Users can view real-time availability, book parking slots online, and make secure payments. Administrators have access to dashboards for tracking revenue and managing users.
+
+## Features
+- Real-time parking availability
+- Google Maps integration for location services
+- Online booking and payment processing
+- Admin dashboard for revenue and user management
+- Responsive design for various devices
+
+## Technologies Used
+- React.js
+- JavaScript (ES6+)
+- Firebase (Authentication, Firestore)
+- Google Maps API
+- CSS3, HTML5
+
+# Getting Started with Create React App
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 
 ## Available Scripts
 

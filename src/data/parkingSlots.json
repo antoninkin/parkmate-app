@@ -1,0 +1,16 @@
+{
+    "parkingSlots": {
+        "slotId1": {
+            "locationId": "locationId1",
+            "status": "occupied",
+            "carId": "carId1",
+            "timestamp": 1653052800000
+        },
+        "slotId2": {
+            "locationId": "locationId2",
+            "status": "available",
+            "carId": null,
+            "timestamp": 1653052800000
+        }
+    }
+}

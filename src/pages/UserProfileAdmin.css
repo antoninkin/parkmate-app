@@ -1,0 +1,42 @@
+.user-profile-admin {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.user-details {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.user-details input {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.user-details button,
+.back-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #fcb900;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.user-details button:hover,
+.back-button:hover {
+    background-color: #cd9600;
+}
+
+.user-history {
+    margin-top: 20px;
+}

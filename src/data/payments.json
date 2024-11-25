@@ -1,0 +1,11 @@
+{
+    "payments": {
+        "paymentId1": {
+            "userId": "userId1",
+            "amount": 15.00,
+            "paymentMethod": "Credit Card",
+            "timestamp": 1653052800000,
+            "reservationId": "reservationId1"
+        }
+    }
+}

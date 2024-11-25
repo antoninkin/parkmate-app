@@ -1,0 +1,20 @@
+{
+    "cars": {
+        "carId1": {
+            "userId": "userId1",
+            "licensePlate": "ABC123",
+            "make": "Toyota",
+            "model": "Corolla",
+            "year": 2020,
+            "color": "Blue"
+        },
+        "carId2": {
+            "userId": "userId2",
+            "licensePlate": "XYZ789",
+            "make": "Honda",
+            "model": "Civic",
+            "year": 2019,
+            "color": "Black"
+        }
+    }
+}

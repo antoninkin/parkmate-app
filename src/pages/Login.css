@@ -1,0 +1,111 @@
+.login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-page h1 {
+    margin-bottom: 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.auth-button {
+    padding: 10px 15px;
+    background-color: #fcb900;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.auth-button:hover {
+    background-color: #cd9600;
+}
+
+.google-button {
+    padding: 16px;
+    border: none;
+    border-radius: 0px;
+    cursor: pointer;
+    background-image: url('./google-sign-in.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex: 1 1 45%;
+    height: 43px;
+    min-width: 200px;
+    min-height: 43px;
+}
+
+.google-button:hover {
+    background-color: none;
+}
+
+.auth-error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.forgot-password {
+    color: blue;
+    text-decoration: none;
+    font-size: 14px;
+    align-self: flex-start;
+    margin-top: 0px;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.forgot-password-button {
+    color: blue;
+    text-decoration: none;
+    border: none;
+    background: none;
+    font-size: 14px;
+    align-self: flex-start;
+}
+
+.forgot-password-button:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
+}
+
+.google-signin-helper {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+}

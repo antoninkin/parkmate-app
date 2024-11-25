@@ -21,3 +21,18 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# api key
+.env
+
+# admin api
+config/parkmate-pmsapp-firebase-adminsdk.json
+
+# Firebase admin SDK
+*firebase-adminsdk*.json
+
+# Ignore InitializeDatabase.js in src/component
+/src/component/InitializeDatabase.js
+
+# Ignore the entire data folder
+/data/

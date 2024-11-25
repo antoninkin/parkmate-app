@@ -1,0 +1,28 @@
+/* src/components/SearchCarPark.css */
+.search-carpark {
+    display: flex;
+    align-items: center;
+}
+
+.search-carpark input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+
+}
+
+.search-carpark button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #fcb900;
+    color: rgb(0, 0, 0);
+    border: 1px solid #ccc;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-carpark button:hover {
+    background-color: #cd9600;
+}

@@ -1,0 +1,11 @@
+{
+    "reservations": {
+        "reservationId1": {
+            "userId": "userId1",
+            "locationId": "locationId1",
+            "startTime": 1653052800000,
+            "endTime": 1653060000000,
+            "status": "active"
+        }
+    }
+}

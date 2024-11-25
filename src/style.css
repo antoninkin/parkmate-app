@@ -1,0 +1,211 @@
+/* General Styles */
+body,
+html {
+    height: 100%;
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 1;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Main Content */
+.home-page {
+    flex: 1;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 0px;
+    flex: 1;
+}
+
+.logout-button {
+    background-color: #fcb900;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.3s;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.logout-button:hover {
+    background-color: #b28302;
+    color: white;
+    border: 1px solid white;
+}
+
+/* Map section styles */
+#google-map {
+    width: 100% !important;
+    height: 100% !important;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.map-container,
+.search-container {
+    width: 50%;
+    height: 100%;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .map-container,
+    .search-container {
+        width: 100%;
+        padding: 1em;
+        box-sizing: border-box;
+    }
+
+    .search-container {
+        height: 130px;
+    }
+
+    .map-container {
+        height: 100%;
+    }
+}
+
+/* initialize-database css */
+
+.initialize-database {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.initialize-database h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.init-button {
+    padding: 10px 15px;
+    margin: 5px;
+    background-color: #fcb900;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.init-button:hover {
+    background-color: #cd9600;
+}
+
+.init-button.all {
+    background-color: #008CBA;
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.init-button.all:hover {
+    background-color: #007B9A;
+}
+
+.collection-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.message {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/*Info Map Window*/
+
+.custom-info-window {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.3);
+    max-width: 250px;
+    overflow: hidden;
+}
+
+.custom-info-window h3 {
+    margin: 0 0 5px;
+    color: #333;
+    font-size: 16px;
+}
+
+.custom-info-window p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.custom-info-window p.address {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.custom-info-window p.available-spots {
+    font-size: 15px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.custom-info-window button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 5px 2px 0;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.custom-info-window button:hover {
+    background-color: #45a049;
+}

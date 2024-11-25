@@ -1,0 +1,10 @@
+{
+    "metrics": {
+        "currentMetrics": {
+            "totalUsers": 150,
+            "totalRevenue": 5000,
+            "totalReservations": 300,
+            "timestamp": 1653060000000
+        }
+    }
+}
