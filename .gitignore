@@ -31,8 +31,5 @@ config/parkmate-pmsapp-firebase-adminsdk.json
 # Firebase admin SDK
 *firebase-adminsdk*.json
 
-# Ignore InitializeDatabase.js in src/component
-/src/component/InitializeDatabase.js
-
 # Ignore the entire data folder
 /data/
