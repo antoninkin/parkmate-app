@@ -2,6 +2,11 @@
   "name": "parkmate-app",
   "version": "0.1.0",
   "private": true,
+  
+  "overrides": {
+      "node-forge": "1.3.2"
+    },
+  
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.5.3",
     "@react-google-maps/api": "^2.19.3",
