@@ -24,11 +24,7 @@ const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    console.log("Google Sign-In Result:", result);
-    console.log("User object:", user);
-
     if (!user.email) {
-      console.error('No email found in Google Sign-In result. User object:', user);
       throw new Error('No email found in Google Sign-In result');
     }
 
@@ -51,10 +47,8 @@ const signInWithGoogle = async () => {
       await setDoc(userDocRef, userData, { merge: true });
     }
 
-    console.log("Google Sign-In Successful", userData);
     return userData;
   } catch (error) {
-    console.error('Google Sign-In Error', error);
     throw error;
   }
 };

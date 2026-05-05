@@ -15,28 +15,29 @@ const UserProfileAdmin = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const userDoc = await getDoc(doc(db, 'users', userId));
-            if (userDoc.exists()) {
-                setUserData({ id: userDoc.id, ...userDoc.data() });
-            } else {
-                alert('User not found');
-                navigate('/admin/search-user');
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                    setUserData({ id: userDoc.id, ...userDoc.data() });
+                } else {
+                    alert('User not found');
+                    navigate('/admin/search-user');
+                    return;
+                }
+
+                const [carsSnapshot, reservationsSnapshot, paymentsSnapshot] = await Promise.all([
+                    getDocs(query(collection(db, 'cars'), where('userId', '==', userId))),
+                    getDocs(query(collection(db, 'reservations'), where('userId', '==', userId))),
+                    getDocs(query(collection(db, 'payments'), where('userId', '==', userId))),
+                ]);
+
+                setUserCars(carsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setUserReservations(reservationsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setUserPayments(paymentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                alert('Failed to load user data. Please try again.');
             }
-
-            // Fetch user's cars
-            const carsQuery = query(collection(db, 'cars'), where('userId', '==', userId));
-            const carsSnapshot = await getDocs(carsQuery);
-            setUserCars(carsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-
-            // Fetch user's reservations
-            const reservationsQuery = query(collection(db, 'reservations'), where('userId', '==', userId));
-            const reservationsSnapshot = await getDocs(reservationsQuery);
-            setUserReservations(reservationsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-
-            // Fetch user's payments
-            const paymentsQuery = query(collection(db, 'payments'), where('userId', '==', userId));
-            const paymentsSnapshot = await getDocs(paymentsQuery);
-            setUserPayments(paymentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         };
         fetchUserData();
     }, [userId, navigate]);
@@ -47,16 +48,26 @@ const UserProfileAdmin = () => {
     };
 
     const handleSave = async () => {
-        await updateDoc(doc(db, 'users', userId), userData);
-        setIsEditing(false);
-        alert('User profile updated successfully');
+        try {
+            await updateDoc(doc(db, 'users', userId), userData);
+            setIsEditing(false);
+            alert('User profile updated successfully');
+        } catch (error) {
+            console.error("Error updating user:", error);
+            alert('Failed to update user. Please try again.');
+        }
     };
 
     const handleDelete = async () => {
         if (window.confirm('Are you sure you want to delete this user?')) {
-            await deleteDoc(doc(db, 'users', userId));
-            alert('User deleted successfully');
-            navigate('/admin/search-user');
+            try {
+                await deleteDoc(doc(db, 'users', userId));
+                alert('User deleted successfully');
+                navigate('/admin/search-user');
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                alert('Failed to delete user. Please try again.');
+            }
         }
     };
 
@@ -110,7 +121,7 @@ const UserProfileAdmin = () => {
                 {userPayments.map(payment => (
                     <div key={payment.id} className="payment-item">
                         <p>Amount: ${payment.amount}</p>
-                        <p>Date: {payment.timestamp.toDate().toLocaleString()}</p>
+                        <p>Date: {payment.timestamp?.toDate?.()?.toLocaleString() ?? 'N/A'}</p>
                         <p>Status: {payment.status}</p>
                     </div>
                 ))}

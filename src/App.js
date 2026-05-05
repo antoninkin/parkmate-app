@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Header from './component/Header';
 import Footer from './component/Footer';
+import ProtectedRoute from './component/ProtectedRoute';
+import AdminRoute from './component/AdminRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import BookOnline from './pages/BookOnline';
@@ -11,7 +13,6 @@ import WhatsOn from './pages/WhatsOn';
 import UserProfile from './pages/UserProfile';
 import ReservationHistory from './pages/ReservationHistory';
 import PaymentHistory from './pages/PaymentHistory';
-import InitializeDatabase from './component/InitializeDatabase';
 import Payment from './pages/Payment';
 import Admin from './pages/Admin';
 import Revenue from './pages/Revenue';
@@ -26,18 +27,17 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/book-online" element={<BookOnline />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/whats-on" element={<WhatsOn />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/reservation-history" element={<ReservationHistory />} />
-          <Route path="/payment-history" element={<PaymentHistory />} />
-          <Route path="/admin/initialize" element={<InitializeDatabase />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/revenue" element={<Revenue />} />
-          <Route path="/admin/search-user" element={<SearchUser />} />
-          <Route path="/admin/user/:userId" element={<UserProfileAdmin />} />
+          <Route path="/book-online" element={<ProtectedRoute><BookOnline /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="/reservation-history" element={<ProtectedRoute><ReservationHistory /></ProtectedRoute>} />
+          <Route path="/payment-history" element={<ProtectedRoute><PaymentHistory /></ProtectedRoute>} />
+          <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+          <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+          <Route path="/admin/revenue" element={<AdminRoute><Revenue /></AdminRoute>} />
+          <Route path="/admin/search-user" element={<AdminRoute><SearchUser /></AdminRoute>} />
+          <Route path="/admin/user/:userId" element={<AdminRoute><UserProfileAdmin /></AdminRoute>} />
         </Routes>
         <Footer />
       </AuthProvider>

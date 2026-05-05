@@ -21,7 +21,6 @@ const BookingModal = ({ locationTitle, onClose }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Booking submitted:', { ...bookingData, locationTitle });
         navigate('/book-online', { state: { bookingData, locationTitle } });
         onClose();
     };

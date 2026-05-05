@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { auth, signInWithGoogle } from '../config/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { AuthContext } from '../contexts/AuthContext';
-import '../pages/Login';
 
 export const Auth = () => {
     const [email, setEmail] = useState('');
@@ -36,6 +35,25 @@ export const Auth = () => {
         }
     };
 
+    const friendlyAuthError = (code) => {
+        switch (code) {
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+            case 'auth/invalid-credential':
+                return 'Invalid email or password.';
+            case 'auth/email-already-in-use':
+                return 'An account with this email already exists.';
+            case 'auth/weak-password':
+                return 'Password must be at least 6 characters.';
+            case 'auth/invalid-email':
+                return 'Please enter a valid email address.';
+            case 'auth/too-many-requests':
+                return 'Too many attempts. Please try again later.';
+            default:
+                return 'An unexpected error occurred. Please try again.';
+        }
+    };
+
     const handleEmailSignIn = async (e) => {
         e.preventDefault();
         setErrors({});
@@ -44,8 +62,7 @@ export const Auth = () => {
             setCurrentUser(userCredential.user);
             navigate('/profile');
         } catch (error) {
-            console.error("Email sign-in error", error);
-            setErrors({ auth: error.message });
+            setErrors({ auth: friendlyAuthError(error.code) });
         }
     };
 
@@ -57,8 +74,7 @@ export const Auth = () => {
             setCurrentUser(userCredential.user);
             navigate('/profile');
         } catch (error) {
-            console.error("Email sign-up error", error);
-            setErrors({ auth: error.message });
+            setErrors({ auth: friendlyAuthError(error.code) });
         }
     };
 
@@ -72,13 +88,12 @@ export const Auth = () => {
             alert('Password reset email sent. Please check your inbox.');
             setShowForgotPassword(false);
         } catch (error) {
-            console.error("Password reset error", error);
-            setErrors({ auth: error.message });
+            setErrors({ auth: friendlyAuthError(error.code) });
         }
     };
 
     if (currentUser) {
-        return <div>Redirecting to profile...</div>;
+        return null;
     }
 
     return (

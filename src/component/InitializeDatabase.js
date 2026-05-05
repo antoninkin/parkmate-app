@@ -3,7 +3,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { db, auth } from '../config/firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { AuthContext } from '../contexts/AuthContext';
-import { checkAdminStatus } from '../utils/authUtils';
 
 // Import your JSON files
 import adminsData from '../data/admins.json';
@@ -19,8 +18,7 @@ import usersData from '../data/users.json';
 const InitializeDatabase = () => {
     const [message, setMessage] = useState('');
     const [isInitializing, setIsInitializing] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, isAdmin } = useContext(AuthContext);
 
     useEffect(() => {
         console.log("Current user changed:", currentUser?.uid);
@@ -38,18 +36,6 @@ const InitializeDatabase = () => {
         { name: 'Reservations', data: reservationsData.reservations, collection: 'reservations' },
         { name: 'Users', data: usersData.users, collection: 'users' },
     ];
-
-    useEffect(() => {
-        const checkAdmin = async () => {
-            if (currentUser) {
-                const adminStatus = await checkAdminStatus(currentUser.uid);
-                setIsAdmin(adminStatus);
-            } else {
-                setIsAdmin(false);
-            }
-        };
-        checkAdmin();
-    }, [currentUser]);
 
     const createAdminProfile = async () => {
         console.log("createAdminProfile function called");

@@ -1,8 +1,78 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users: own document + admins
+    match /users/{userId} {
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Cars: owner scoped by userId field
+    match /cars/{carId} {
+      allow read:   if isAuthenticated()
+                      && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated()
+                      && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated()
+                      && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated()
+                      && resource.data.userId == request.auth.uid;
+    }
+
+    // Reservations: owner scoped + admin read
+    match /reservations/{reservationId} {
+      allow read:   if isAuthenticated()
+                      && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated()
+                      && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated()
+                      && (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Payments: owner read/create, admin full access
+    match /payments/{paymentId} {
+      allow read:   if isAuthenticated()
+                      && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated()
+                      && request.resource.data.userId == request.auth.uid
+                      && request.resource.data.amount > 0
+                      && get(/databases/$(database)/documents/reservations/$(request.resource.data.reservationId)).data.userId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Parking locations: any auth user reads; admins can write anything;
+    // authenticated users may decrement availableSpots by exactly 1 (payment flow)
+    match /parkingLocations/{locationId} {
+      allow read:   if isAuthenticated();
+      allow write:  if isAdmin();
+      allow update: if isAuthenticated()
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['availableSpots'])
+                      && request.resource.data.availableSpots == resource.data.availableSpots - 1
+                      && resource.data.availableSpots > 0;
+    }
+
+    // Admins: only admins can read; never writable from client
+    match /admins/{adminId} {
+      allow read:  if isAdmin() || request.auth.uid == adminId;
+      allow write: if false;
     }
   }
 }

@@ -8,10 +8,12 @@ import './History.css';
 const ReservationHistory = () => {
     const { currentUser } = useContext(AuthContext);
     const [reservations, setReservations] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchReservations = async () => {
-            if (currentUser) {
+            if (!currentUser) return;
+            try {
                 const reservationsRef = collection(db, 'reservations');
                 const q = query(
                     reservationsRef,
@@ -20,6 +22,9 @@ const ReservationHistory = () => {
                 );
                 const querySnapshot = await getDocs(q);
                 setReservations(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (err) {
+                console.error("Error fetching reservations:", err);
+                setError("Failed to load reservation history. Please try again.");
             }
         };
         fetchReservations();
@@ -51,23 +56,24 @@ const ReservationHistory = () => {
         }
     };
 
-    const canCancelBooking = (arrivalDate, arrivalTime) => {
-        const now = new Date();
-        const bookingStart = new Date(`${arrivalDate}T${arrivalTime}`);
-        return bookingStart > now;
+    const canCancelBooking = (reservation) => {
+        const time = reservation.arrivalTime ?? `${reservation.arrivalHour}:${reservation.arrivalMinute}`;
+        const bookingStart = new Date(`${reservation.arrivalDate}T${time}`);
+        return bookingStart > new Date();
     };
 
     return (
         <div className="history-container">
             <h2>Reservation History</h2>
+            {error && <p className="error-message">{error}</p>}
             {reservations.map((reservation) => (
                 <div key={reservation.id} className="history-item">
                     <p>Car Park: {reservation.carParkName}</p>
-                    <p>Arrival: {reservation.arrivalDate} {reservation.arrivalTime}</p>
-                    <p>Exit: {reservation.exitDate} {reservation.exitTime}</p>
+                    <p>Arrival: {reservation.arrivalDate} {reservation.arrivalTime ?? `${reservation.arrivalHour}:${reservation.arrivalMinute}`}</p>
+                    <p>Exit: {reservation.exitDate} {reservation.exitTime ?? `${reservation.exitHour}:${reservation.exitMinute}`}</p>
                     <p>Price: ${reservation.price}</p>
                     <p>Status: {reservation.status}</p>
-                    {canCancelBooking(reservation.arrivalDate, reservation.arrivalTime) && reservation.status !== 'Cancelled' && (
+                    {canCancelBooking(reservation) && reservation.status !== 'Cancelled' && (
                         <button onClick={() => cancelBooking(reservation.id, reservation.paymentId)} className="cancel-button">
                             Cancel Booking
                         </button>

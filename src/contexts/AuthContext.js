@@ -1,26 +1,54 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        let adminUnsubscribe = null;
+
+        const authUnsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
-            setLoading(false);
+
+            if (adminUnsubscribe) {
+                adminUnsubscribe();
+                adminUnsubscribe = null;
+            }
+
+            if (user) {
+                // Real-time admin status: reacts immediately if access is revoked
+                adminUnsubscribe = onSnapshot(
+                    doc(db, 'admins', user.uid),
+                    (snapshot) => {
+                        setIsAdmin(snapshot.exists());
+                        setLoading(false);
+                    },
+                    () => {
+                        setIsAdmin(false);
+                        setLoading(false);
+                    }
+                );
+            } else {
+                setIsAdmin(false);
+                setLoading(false);
+            }
         });
 
-        return () => unsubscribe();
+        return () => {
+            authUnsubscribe();
+            if (adminUnsubscribe) adminUnsubscribe();
+        };
     }, []);
 
     const logout = async () => {
         try {
             await signOut(auth);
-            setCurrentUser(null);
         } catch (error) {
             console.error("Error signing out: ", error);
         }
@@ -29,6 +57,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         currentUser,
         setCurrentUser,
+        isAdmin,
         logout
     };
 

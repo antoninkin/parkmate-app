@@ -169,7 +169,7 @@ const UserProfile = () => {
                     <label htmlFor="address">Address</label>
                     <input type="text" id="address" name="address" value={userData.address} onChange={handleUserDataChange} />
                 </div>
-                <button class="user" onClick={saveProfile}>Save Profile</button>
+                <button className="user" onClick={saveProfile}>Save Profile</button>
             </div>
 
             <h3>Registered Cars</h3>

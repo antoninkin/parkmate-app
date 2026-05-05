@@ -1,23 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import { checkAdminStatus } from '../utils/authUtils';
 import './Header.css';
 
 const Header = () => {
-    const { currentUser, logout } = useContext(AuthContext);
+    const { currentUser, isAdmin, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [isAdmin, setIsAdmin] = useState(false);
-
-    useEffect(() => {
-        const checkAdmin = async () => {
-            if (currentUser) {
-                const adminStatus = await checkAdminStatus(currentUser.uid);
-                setIsAdmin(adminStatus);
-            }
-        };
-        checkAdmin();
-    }, [currentUser]);
 
     const handleLogout = async () => {
         try {

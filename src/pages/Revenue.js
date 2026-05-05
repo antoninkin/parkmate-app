@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, query, where, orderBy, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import './Revenue.css';
 
@@ -11,6 +11,7 @@ const Revenue = () => {
     const [month, setMonth] = useState('');
     const [parkingLocation, setParkingLocation] = useState('');
     const [parkingLocations, setParkingLocations] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchParkingLocations = async () => {
@@ -27,54 +28,56 @@ const Revenue = () => {
     }, []);
 
     const calculateRevenue = async () => {
-        const paymentsCollection = collection(db, 'payments');
-        let q = query(paymentsCollection, orderBy('timestamp', 'desc'));
+        if (isLoading) return;
+        setIsLoading(true);
 
-        const startDate = new Date(`${year}-01-01T00:00:00`);
-        const endDate = new Date(`${parseInt(year) + 1}-01-01T00:00:00`);
-        q = query(q, where('timestamp', '>=', startDate), where('timestamp', '<', endDate));
+        try {
+            const paymentsCollection = collection(db, 'payments');
+            let q = query(paymentsCollection);
 
-        if (month) {
-            const monthStartDate = new Date(`${year}-${month}-01T00:00:00`);
-            const monthEndDate = new Date(new Date(monthStartDate).setMonth(monthStartDate.getMonth() + 1));
-            q = query(q, where('timestamp', '>=', monthStartDate), where('timestamp', '<', monthEndDate));
-        }
-
-        const querySnapshot = await getDocs(q);
-        let totalRevenue = 0;
-
-        console.log(`Total documents retrieved: ${querySnapshot.size}`);
-        console.log(`Selected parking location: ${parkingLocation}`);
-
-        for (const docSnapshot of querySnapshot.docs) {
-            const payment = docSnapshot.data();
-            console.log(`Payment:`, payment);
-
-            if (!payment.reservationId) {
-                console.log(`Skipped: payment has no reservationId`);
-                continue;
-            }
-
-            // Fetch the reservation to get the locationId
-            const reservationRef = doc(db, 'reservations', payment.reservationId);
-            const reservationDoc = await getDoc(reservationRef);
-
-            if (reservationDoc.exists()) {
-                const reservation = reservationDoc.data();
-                console.log(`Reservation:`, reservation);
-                if (!parkingLocation || reservation.locationId === parkingLocation) {
-                    totalRevenue += payment.amount;
-                    console.log(`Added to total: ${payment.amount}`);
-                } else {
-                    console.log(`Skipped: reservation locationId doesn't match`);
-                }
+            if (month) {
+                const monthNum = parseInt(month, 10);
+                if (monthNum < 1 || monthNum > 12) return;
+                const monthStartDate = new Date(`${year}-${month}-01T00:00:00`);
+                const monthEndDate = new Date(new Date(monthStartDate).setMonth(monthStartDate.getMonth() + 1));
+                q = query(q, where('timestamp', '>=', monthStartDate), where('timestamp', '<', monthEndDate));
             } else {
-                console.log(`Skipped: reservation not found`);
+                const startDate = new Date(`${year}-01-01T00:00:00`);
+                const endDate = new Date(`${parseInt(year, 10) + 1}-01-01T00:00:00`);
+                q = query(q, where('timestamp', '>=', startDate), where('timestamp', '<', endDate));
             }
-        }
 
-        console.log(`Final total revenue: ${totalRevenue}`);
-        setRevenue(totalRevenue);
+            const querySnapshot = await getDocs(q);
+            let totalRevenue = 0;
+
+            for (const docSnapshot of querySnapshot.docs) {
+                const payment = docSnapshot.data();
+                if (!payment.reservationId) continue;
+
+                if (parkingLocation) {
+                    // Use locationId stored on payment (new payments) to avoid N+1 fetch
+                    if (payment.locationId) {
+                        if (payment.locationId === parkingLocation) {
+                            totalRevenue += payment.amount ?? 0;
+                        }
+                        continue;
+                    }
+                    // Fall back to reservation fetch for older payments without locationId
+                    const reservationDoc = await getDoc(doc(db, 'reservations', payment.reservationId));
+                    if (reservationDoc.exists() && reservationDoc.data().locationId === parkingLocation) {
+                        totalRevenue += payment.amount ?? 0;
+                    }
+                } else {
+                    totalRevenue += payment.amount ?? 0;
+                }
+            }
+
+            setRevenue(totalRevenue);
+        } catch (err) {
+            console.error("Error calculating revenue:", err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -105,7 +108,9 @@ const Revenue = () => {
                         <option key={location.id} value={location.id}>{location.name}</option>
                     ))}
                 </select>
-                <button onClick={calculateRevenue}>Calculate Revenue</button>
+                <button onClick={calculateRevenue} disabled={isLoading}>
+                    {isLoading ? 'Calculating...' : 'Calculate Revenue'}
+                </button>
             </div>
             <div className="revenue-display">
                 <h2>Total Revenue: ${revenue.toFixed(2)}</h2>

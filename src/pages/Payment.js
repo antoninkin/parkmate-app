@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { doc, updateDoc, addDoc, collection, getDoc } from 'firebase/firestore';
+import { doc, addDoc, collection, getDoc, runTransaction } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 import './Payment.css';
@@ -12,70 +12,111 @@ const Payment = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
     const [reservationData, setReservationData] = useState(null);
     const [error, setError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        console.log("Payment component mounted. Location state:", location.state);
-        if (location.state && location.state.reservationId) {
-            setReservationData(location.state);
-        } else {
+        const reservationId = location.state?.reservationId;
+        if (!reservationId) {
             setError("No reservation data provided. Please go back and try booking again.");
+            return;
         }
-    }, [location.state]);
+        if (!currentUser) return;
 
-    const handlePaymentMethodChange = (e) => {
-        setPaymentMethod(e.target.value);
-    };
+        const fetchReservation = async () => {
+            try {
+                const reservationRef = doc(db, 'reservations', reservationId);
+                const reservationDoc = await getDoc(reservationRef);
+
+                if (!reservationDoc.exists()) {
+                    setError("Reservation not found.");
+                    return;
+                }
+
+                const data = reservationDoc.data();
+
+                if (data.userId !== currentUser.uid) {
+                    setError("You don't have permission to pay for this reservation.");
+                    return;
+                }
+
+                if (data.status !== 'pending') {
+                    setError("This reservation has already been paid or is no longer valid.");
+                    return;
+                }
+
+                const arrivalTime = data.arrivalHour && data.arrivalMinute
+                    ? `${data.arrivalHour}:${data.arrivalMinute}`
+                    : '';
+                const exitTime = data.exitHour && data.exitMinute
+                    ? `${data.exitHour}:${data.exitMinute}`
+                    : '';
+
+                setReservationData({ reservationId, ...data, arrivalTime, exitTime });
+            } catch (err) {
+                console.error("Error fetching reservation:", err);
+                setError("Failed to load reservation. Please try again.");
+            }
+        };
+
+        fetchReservation();
+    }, [location.state, currentUser]);
 
     const handlePayment = async () => {
         if (!paymentMethod) {
-            alert('Please select a payment method');
+            setError('Please select a payment method.');
             return;
         }
+        if (!reservationData || isSubmitting) return;
 
-        if (!reservationData) {
-            alert('No reservation data available');
-            return;
-        }
+        setIsSubmitting(true);
+        setError(null);
 
         try {
-            // Update reservation status
             const reservationRef = doc(db, 'reservations', reservationData.reservationId);
-            await updateDoc(reservationRef, {
-                status: 'paid',
-                paymentMethod: paymentMethod
+            const parkingLocationRef = doc(db, 'parkingLocations', reservationData.locationId);
+            const paymentRef = doc(collection(db, 'payments'));
+
+            await runTransaction(db, async (transaction) => {
+                const reservationDoc = await transaction.get(reservationRef);
+                const parkingDoc = await transaction.get(parkingLocationRef);
+
+                if (!reservationDoc.exists()) throw new Error("Reservation no longer exists.");
+                const res = reservationDoc.data();
+                if (res.status !== 'pending') throw new Error("This reservation has already been paid.");
+                if (res.userId !== currentUser.uid) throw new Error("Unauthorized.");
+
+                if (parkingDoc.exists()) {
+                    const spots = parkingDoc.data().availableSpots;
+                    if (spots <= 0) throw new Error("No available spots at this location.");
+                    transaction.update(parkingLocationRef, { availableSpots: spots - 1 });
+                }
+
+                transaction.update(reservationRef, {
+                    status: 'paid',
+                    paymentMethod,
+                });
+
+                transaction.set(paymentRef, {
+                    reservationId: reservationData.reservationId,
+                    userId: currentUser.uid,
+                    locationId: reservationData.locationId,
+                    amount: reservationData.price,
+                    paymentMethod,
+                    timestamp: new Date(),
+                    status: 'completed',
+                });
             });
 
-            // Add payment details to a new 'payments' collection
-            const paymentData = {
-                reservationId: reservationData.reservationId,
-                userId: currentUser.uid,
-                amount: reservationData.price,
-                paymentMethod: paymentMethod,
-                timestamp: new Date(),
-                status: 'completed'
-            };
-
-            await addDoc(collection(db, 'payments'), paymentData);
-
-            // Update available spots in parkingLocations
-            const parkingLocationRef = doc(db, 'parkingLocations', reservationData.locationId);
-            const parkingLocationDoc = await getDoc(parkingLocationRef);
-            if (parkingLocationDoc.exists()) {
-                const currentSpots = parkingLocationDoc.data().availableSpots;
-                await updateDoc(parkingLocationRef, {
-                    availableSpots: currentSpots - 1
-                });
-            }
-
-            alert('Payment successful!');
-            navigate('/'); // Navigate back to home or to a confirmation page
-        } catch (error) {
-            console.error("Error processing payment: ", error);
-            alert('Payment failed. Please try again.');
+            navigate('/', { replace: true });
+        } catch (err) {
+            console.error("Error processing payment:", err);
+            setError(err.message || 'Payment failed. Please try again.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    if (error) {
+    if (error && !reservationData) {
         return <div className="error-message">{error}</div>;
     }
 
@@ -93,6 +134,7 @@ const Payment = () => {
                 <p>Exit: {reservationData.exitDate} {reservationData.exitTime}</p>
                 <p>Total Price: ${reservationData.price}</p>
             </div>
+            {error && <div className="error-message">{error}</div>}
             <div className="payment-methods">
                 <h2>Select Payment Method</h2>
                 <div>
@@ -102,7 +144,7 @@ const Payment = () => {
                         name="paymentMethod"
                         value="card"
                         checked={paymentMethod === 'card'}
-                        onChange={handlePaymentMethodChange}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
                     />
                     <label htmlFor="card">Credit Card</label>
                 </div>
@@ -113,7 +155,7 @@ const Payment = () => {
                         name="paymentMethod"
                         value="apple-pay"
                         checked={paymentMethod === 'apple-pay'}
-                        onChange={handlePaymentMethodChange}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
                     />
                     <label htmlFor="apple-pay">Apple Pay</label>
                 </div>
@@ -124,12 +166,18 @@ const Payment = () => {
                         name="paymentMethod"
                         value="google-pay"
                         checked={paymentMethod === 'google-pay'}
-                        onChange={handlePaymentMethodChange}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
                     />
                     <label htmlFor="google-pay">Google Pay</label>
                 </div>
             </div>
-            <button onClick={handlePayment} className="pay-button">Pay Now</button>
+            <button
+                onClick={handlePayment}
+                className="pay-button"
+                disabled={isSubmitting}
+            >
+                {isSubmitting ? 'Processing...' : 'Pay Now'}
+            </button>
         </div>
     );
 };

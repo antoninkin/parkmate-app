@@ -8,18 +8,25 @@ const SearchUser = () => {
     const navigate = useNavigate();
     const [searchEmail, setSearchEmail] = useState('');
     const [searchResult, setSearchResult] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleSearch = async () => {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where("email", "==", searchEmail));
-        const querySnapshot = await getDocs(q);
+        setError(null);
+        setSearchResult(null);
+        try {
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where("email", "==", searchEmail));
+            const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-            const userData = querySnapshot.docs[0].data();
-            setSearchResult({ id: querySnapshot.docs[0].id, ...userData });
-        } else {
-            setSearchResult(null);
-            alert('User not found');
+            if (!querySnapshot.empty) {
+                const userData = querySnapshot.docs[0].data();
+                setSearchResult({ id: querySnapshot.docs[0].id, ...userData });
+            } else {
+                setError('No user found with that email address.');
+            }
+        } catch (err) {
+            console.error("Error searching for user:", err);
+            setError("Search failed. Please try again.");
         }
     };
 
@@ -39,6 +46,7 @@ const SearchUser = () => {
                 />
                 <button onClick={handleSearch}>Search</button>
             </div>
+            {error && <p className="error-message">{error}</p>}
             {searchResult && (
                 <div className="search-result">
                     <h2>User Found:</h2>

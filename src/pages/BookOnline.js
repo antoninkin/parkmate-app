@@ -23,6 +23,8 @@ const BookOnline = () => {
     const [parkingLocations, setParkingLocations] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [userCars, setUserCars] = useState([]);
+    const [submitError, setSubmitError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const fetchUserCars = useCallback(async () => {
         if (currentUser) {
@@ -135,6 +137,30 @@ const BookOnline = () => {
             alert('Please select a car for your reservation.');
             return;
         }
+        if (!bookingData.locationId) {
+            alert('Please select a valid car park from the suggestions.');
+            return;
+        }
+        const arrival = new Date(`${bookingData.arrivalDate}T${bookingData.arrivalHour}:${bookingData.arrivalMinute}`);
+        const exit = new Date(`${bookingData.exitDate}T${bookingData.exitHour}:${bookingData.exitMinute}`);
+        const now = new Date();
+        if (isNaN(arrival.getTime()) || isNaN(exit.getTime())) {
+            alert('Please enter valid arrival and exit date/time.');
+            return;
+        }
+        if (arrival < now) {
+            alert('Arrival time must be in the future.');
+            return;
+        }
+        if (exit <= arrival) {
+            alert('Exit time must be after arrival time.');
+            return;
+        }
+        const maxDuration = 30 * 24 * 60 * 60 * 1000; // 30 days in ms
+        if (exit - arrival > maxDuration) {
+            alert('Booking duration cannot exceed 30 days.');
+            return;
+        }
         const price = calculatePrice();
         const reservationData = {
             ...bookingData,
@@ -142,6 +168,8 @@ const BookOnline = () => {
             price,
             status: 'pending'
         };
+        setSubmitError(null);
+        setIsSubmitting(true);
         try {
             const docRef = await addDoc(collection(db, 'reservations'), reservationData);
             const paymentState = {
@@ -150,10 +178,12 @@ const BookOnline = () => {
                 arrivalTime: `${bookingData.arrivalHour}:${bookingData.arrivalMinute}`,
                 exitTime: `${bookingData.exitHour}:${bookingData.exitMinute}`
             };
-            console.log("Navigating to payment with state:", paymentState);
             navigate('/payment', { state: paymentState });
         } catch (error) {
             console.error("Error creating reservation: ", error);
+            setSubmitError("Failed to create reservation. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -273,7 +303,10 @@ const BookOnline = () => {
                         </select>
                     </div>
                 </div>
-                <button type="submit" className="submit-button">Book Now</button>
+                {submitError && <div className="error-message">{submitError}</div>}
+                <button type="submit" className="submit-button" disabled={isSubmitting}>
+                    {isSubmitting ? 'Booking...' : 'Book Now'}
+                </button>
             </form>
         </div>
     );
