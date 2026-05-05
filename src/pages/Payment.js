@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { doc, addDoc, collection, getDoc, runTransaction } from 'firebase/firestore';
+import { doc, collection, getDoc, runTransaction } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 import './Payment.css';
