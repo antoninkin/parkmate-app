@@ -13,27 +13,7 @@ const MapLayout = ({ searchQuery, searchLocation, onBooking }) => {
     const searchMarkerRef = useRef(null);
 
     useEffect(() => {
-        const loadGoogleMapsScript = () => {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
-            script.async = true;
-            script.defer = true;
-            script.onload = () => {
-                console.log('Google Maps script loaded successfully');
-                googleRef.current = window.google;
-                setMapLoaded(true);
-            };
-            script.onerror = () => {
-                console.error('Failed to load Google Maps script');
-            };
-            document.head.appendChild(script);
-        };
-
-        if (!window.google) {
-            console.log('Google Maps not loaded, attempting to load script');
-            loadGoogleMapsScript();
-        } else {
-            console.log('Google Maps already loaded');
+        if (window.google) {
             googleRef.current = window.google;
             setMapLoaded(true);
         }
